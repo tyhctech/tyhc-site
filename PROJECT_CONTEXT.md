@@ -32,6 +32,7 @@
 ├── solution.html       # 运营体系（七层 / 治理 / 权限熔断）
 ├── service.html        # 服务与价格（L0–L6 / 五档包 / 六项保障）
 ├── cases.html          # 行业案例（四行业 / 四案例）
+├── products.html       # 产品矩阵（六大业务环节 + 贯穿六段的底座）
 ├── style.css           # 共享样式
 ├── app.js              # 移动端导航
 ├── robots.txt / sitemap.xml
@@ -52,6 +53,7 @@
 - ✅ 5 个页面开发完成，内容取自《天予恒成公司简介》PPT 14 页
 - ✅ 部署 GitHub Pages（仓库 hadesheng/tyhc-site），构建 built
 - ✅ 自定义域名 tyhctech.com：仓库 CNAME 文件 + Pages cname 已设置，canonical / sitemap / robots 全部改为 tyhctech.com
+- ✅ 产品矩阵页 `products.html`（v1.4 已按六大业务环节重构并上线）
 - ⬜ **待用户在 DNSPod 加解析**（4 条 A + www CNAME），生效后 GitHub 签发 HTTPS 证书
 - ⬜ 生产级合规：ICP 备案（如需境内服务器/CDN、公众号小程序跳转、平台投流）
 - ⬜ OG 分享图（1200×630）
@@ -70,6 +72,9 @@
 9. **踩坑：手写 HTML 闭合错导致布局崩** — `service.html` L1–L3 的 `<h4>诊断</div>`（应为 `</h4>`）使 `<p>` 脱离卡片、被 grid 当作独立项，七阶步骤视觉错乱。**规则**：改完页面必须 headless 截图核验 + 跑标签平衡检查（脚本 `assets/fix_and_check.py`），不能只看源码。
 10. **构建方式真相（2026-11-11 纠错，重要）** — 本仓库**不是** Jekyll + Actions 发布：无 `_config.yml`、无 `Gemfile`、无 `.github/workflows`、无 `gh-pages` 分支，根目录有 `.nojekyll`。GitHub Pages 走 legacy 构建，**直接从 `main` 分支根目录发布原始 HTML/CSS/JS**。所以「本地 `jekyll clean && jekyll build` + 检查 `_site`」在这台机器上不存在也跑不了（无 Ruby/Jekyll）。**等效自检三项**：①全库 grep 旧菜单词零命中（html/js/yml/md 全覆盖）；②`python -m http.server 8788` + headless Chrome 逐页截图肉眼核验；③HTML 标签闭合校验（`html.parser` 脚本，2026-11-11 用 `D:\Temp\tyhc_check\check_tags.py`，7 页全 OK）。实测发布生效 20–60 秒，响应头 `Cache-Control: max-age=600`、`Server: GitHub.com`，**无 `cf-cache-status`** → 本域名直连 GitHub Pages（185.199.x.x），不经过 Cloudflare，"清 CF 缓存"这一步在本站不适用。
 11. **推送通道实测（2026-11-11）** — `git push` / `git ls-remote` 到 github.com:443 全部 `Connection was reset`，本机无代理（7890/7897/10809/1080/8080 均无监听）、无 credential helper；SSH 443 能连通但公钥被拒（`Permission denied (publickey)`）。**可用通道只有 `gh api` Contents API**：gh 在 `D:\工具\gh-cli\bin\gh.exe`（**不在 PATH**，`gh` 直接调会 CommandNotFound），账号 `hadesheng` 走 keyring 已登录，对 `tyhctech/tyhc-site` 权限 `push=true`（组织成员接口 404 不影响推送）。逐文件 PUT 必须带远端 sha 做乐观锁，返回的 blob sha 与本地 `git hash-object` 一致才算内容对齐。
+12. **产品矩阵的组织口径：按业务环节，不按交付形态（v1.4，2026-11-11）** — v1.2 的 `products.html` 分「软件工具 / 算力底座 / 五档服务包」三类，是按**交付形态**分，客户看不出「我这条链上哪一步能用上什么」。v1.4 改为按**业务环节**分六段：获客引流 → 售前交付 → 生产与业务执行 → 内部协同管理 → 风控合规与文档资产 → 复盘与数据运营；算力与模型不构成独立业务环节，下移为「贯穿六段的底座」单独一段，避免把支撑层混进业务链顺序。**页面产品名的唯一来源是 `04-产品官网/products.json`**（只取 name / form，剔除 margin、strategicFit、内部仓库 link），生成脚本按 `code` 取值并在标题上去掉价格后缀；名录更新后重跑脚本即可同步最新版，禁止在 HTML 里手工写产品名。服务包（救命 / 增效 / 建制 / 增长 / 共创）不再逐段重复出现在卡片里，统一收进「全链交付」价目表，避免与 `service.html` 的价目表两处维护。名录中 status=待建 / 规划的 5 项（FDE 初级认证、客户送培、高校订单班、AI 应用开发双边市场、数字员工应用商店）暂不上公开页，用户明确需要时再加「在建与规划」区块。
+13. **对外文案的两条口径（v1.4，用户明确要求）** — ①**不标在售 / 可售 / 试点**：官网是宣传与门户，不做销售状态标注，卡片只留「交付形态 + 业务价值 + 适用岗位」；②**不用口语化表述**：门户文案统一书面语，禁用「不用…」「靠人…」「干多少」「先跑通」「过夜」「补作业」一类口语与拟人化说法（生成后自查这些词计数应为 0）。
+14. **行尾与编码（v1.4 踩坑）** — Python 在 Windows 用 `io.open(path, "w")` 写文件会把 `\n` 自动转成 `\r\n`，导致产物行尾与原站（LF、UTF-8 无 BOM）不一致、整文件 diff 假变更。生成脚本写完必须做一次 CRLF→LF 规整（`D:\Temp\tyhc_chain\normalize.py`），并核对 BOM=false。
 
 ## 七、接手提示（唯一真相路径、验证方式）
 
@@ -94,3 +99,4 @@
 | 2026-11-11 | **导航更名（v1.3）**：全站菜单项改为「运营体系」，覆盖 6 页顶部导航 + 页脚共 12 处链接文字，`solution.html` 页面 title 同步；全库（html/js/yml/md）检索旧词 0 命中；本地起 http 服务 + headless 截图核验渲染无误 |
 | 2026-11-11 | **v1.3 已上线**：9 个文件（6 页 + README/PROJECT_CONTEXT/CHANGELOG）经 Contents API 逐文件提交到 `tyhctech/tyhc-site@main`，线上 6 页全部 200、新词每页 2–3 处、旧词 0；`solution.html` title=「运营体系 - AI 控制中心与数字员工治理」；其余资源（style.css / app.js / sitemap / robots / security.txt 双份）全 200，未知路径仍 404 |
 | 2026-11-11 | **待办（git 基线分叉）**：远端 `main` 的全部提交由 API 生成，本地仓库还有 6 个未推提交，两侧历史已分叉。**网络恢复后先 `git fetch` 重建基线再决定合并或重置，禁止直接强推覆盖远端**；本次改动本地已另做一次 commit 留痕 |
+| 2026-11-11 | **v1.4 产品矩阵重构并上线**：`products.html` 改按六大业务环节组织（获客引流 / 售前交付 / 生产与业务执行 / 内部协同管理 / 风控合规与文档资产 / 复盘与数据运营），算力与治理单列为「贯穿六段的底座」；顶部六段业务链时间轴可点击跳转；28 张卡片统一三要素；产品名由 `04-产品官网/products.json` 生成（小红书采集器 / 一键成片 / 产品雷达 V3 / Rose 企微机器人 / 算力一体机与推理卡 / AI 控制中心）；服务包收进「全链交付」表。`products.html` + `style.css` 经 Contents API 提交（blob 4dff87d3da65 / 1b23c836dbc9），线上 `products.html` 核验：200、含「六大业务环节」「逐环可交付」、六个 chain 锚点齐全、在售/可售/试点/产品体系 全 0、title=「产品矩阵 - 按六大业务环节组织的产品与方案」；`style.css` 含 `.chainline` / `.chain-sec` / `.cmeta`。行尾已规整为 LF、UTF-8 无 BOM |
