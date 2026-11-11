@@ -1,0 +1,20 @@
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 密钥与本地环境
+.env
+.env.*
+
+# 本地素材与大文件（不随代码入库）
+assets/
+docs/本地素材/
+*.pptx
+*.psd
+*.ai
+
+# 预览/构建产物
+node_modules/
+dist/
+_shots/
