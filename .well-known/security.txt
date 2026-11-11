@@ -1,0 +1,6 @@
+# 安全策略与漏洞报告（RFC 9116）
+Contact: mailto:hadeshengai@163.com
+Expires: 2027-11-11T00:00:00.000Z
+Preferred-Languages: zh, en
+Canonical: https://tyhctech.com/.well-known/security.txt
+Policy: https://tyhctech.com/robots.txt
