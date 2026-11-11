@@ -1,4 +1,5 @@
-User-agent: *
+﻿User-agent: *
 Allow: /
 
-Sitemap: https://hadesheng.github.io/tyhc-site/sitemap.xml
+Sitemap: https://hadesheng.cn/tyhc-site/sitemap.xml
+
