@@ -200,3 +200,19 @@ td strong,h3 strong{color:var(--text);font-weight:600}
   th,td{padding:12px 14px}
   .footer-grid{grid-template-columns:1fr}
 }
+
+/* ---------- 业务链时间轴（产品矩阵页专用） ---------- */
+.chainline{display:flex;gap:12px;overflow-x:auto;padding:2px 0 16px;scroll-snap-type:x proximity}
+@media(min-width:1000px){.chainline{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;overflow:visible}}
+.chainline a{flex:0 0 auto;min-width:186px;scroll-snap-align:start;padding:14px 16px;border:1px solid var(--line-soft);border-radius:var(--radius);background:rgba(255,255,255,.02);transition:border-color .2s,transform .2s,background .2s}
+.chainline a:hover{border-color:rgba(34,211,238,.32);transform:translateY(-2px);background:rgba(34,211,238,.04)}
+.chainline a .cn{display:block;font-size:11.5px;letter-spacing:.14em;font-weight:700;color:var(--cyan)}
+.chainline a .ct{display:block;margin-top:7px;font-size:15px;font-weight:700;color:var(--text);line-height:1.5}
+.chainline a .cs{display:block;margin-top:7px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.chain-hint{font-size:12.5px;color:var(--muted-2);margin:0 0 10px}
+.chain-sec{padding:60px 0}
+@media(max-width:760px){.chain-sec{padding:44px 0}}
+.cmeta{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-soft);display:grid;gap:5px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.cmeta i{font-style:normal;color:var(--muted-2)}
+.cmeta i b{color:var(--text);font-weight:600}
+.chain-tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--cyan);letter-spacing:.12em;font-weight:700}
