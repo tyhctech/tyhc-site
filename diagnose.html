@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://tyhctech.com/diagnose.html">
+<title>AI 落地初诊 · 5 分钟自查 | 天予恒成</title>
+<meta name="description" content="12 道题自查企业 AI 落地条件：场景、可量化基线、数据基础、组织与预算，给出起步建议与适配服务包。计算在本机完成，答案不上传。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322D3EE'/%3E%3Cstop offset='1' stop-color='%238B5CF6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%23070A13'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='17' font-weight='700' text-anchor='middle' fill='url(%23g)'%3E天%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">天</span>
+      <span class="brand-text">天予恒成<span class="brand-sub">TIANYU HENGCHENG</span></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">首页</a>
+      <a href="about.html">关于我们</a>
+      <a href="solution.html">运营体系</a>
+      <a href="products.html">产品矩阵</a>
+      <a href="service.html">服务与价格</a>
+      <a href="cases.html">行业案例</a>
+      <a href="diagnose.html" class="nav-cta">免费初诊</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="展开导航">菜单</button>
+  </div>
+</header>
+
+<section class="hero" style="padding-bottom:52px">
+  <div class="hero-inner">
+    <span class="label">Free Self-Check</span>
+    <h1>AI 落地初诊<br><span class="grad">5 分钟自查</span></h1>
+    <p class="hero-sub">12 道题，按企业实际运行环节作答，立即得到起步建议、适配服务包与行动清单。全部计算在本机浏览器完成，答案不上传、不落库。</p>
+  </div>
+</section>
+
+<section class="sec-tight">
+  <div class="wrap">
+    <div class="quiz" id="quiz">
+      <div class="quiz-head">
+        <span class="quiz-step" id="quizStepLabel">第 1 步 / 共 4 步</span>
+        <span class="quiz-step" id="quizCount">0 / 12 题</span>
+      </div>
+      <div class="quiz-track"><div class="quiz-fill" id="quizFill"></div></div>
+      <div id="quizBody"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost" id="quizPrev" type="button" disabled>上一步</button>
+        <button class="btn btn-primary" id="quizNext" type="button">下一步</button>
+      </div>
+      <p class="quiz-tip">按实际情况选即可，不必精确。拿不准的项选「说不清 / 不确定」，结论会相应给出补齐建议。</p>
+    </div>
+
+    <div class="quiz-result" id="quizResult" hidden></div>
+  </div>
+</section>
+
+<section style="background:var(--bg-soft);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">How It Works</span>
+      <h2>这份初诊怎么用</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <h3>本机计算，不上传</h3>
+        <p>题目与评分逻辑都在浏览器内运行，没有提交接口、没有数据库。填完关闭页面即可，答案不会离开你的电脑。</p>
+      </div>
+      <div class="card">
+        <h3>结论是起点，不是报价</h3>
+        <p>输出的是适配档位与行动清单，用于判断「现在适合做什么」；具体方案与价格需在确认场景基线后另行测算。</p>
+      </div>
+      <div class="card">
+        <h3>下一步怎么走</h3>
+        <p>需要有人一起看结论，可把摘要发送到企业邮箱，或直接预约 30 分钟诊断沟通。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand">成都天予恒成科技有限公司</div>
+        <p>专注企业 AI 落地 · 大厂造算力，我们造生产力</p>
+        <p>成立于 2019 年 10 月 · 国家高新技术企业</p>
+      </div>
+      <div>
+        <h4>导航</h4>
+        <p><a href="about.html">关于我们</a></p>
+        <p><a href="solution.html">运营体系</a></p>
+        <p><a href="products.html">产品矩阵</a></p>
+        <p><a href="service.html">服务与价格</a></p>
+        <p><a href="cases.html">行业案例</a></p>
+      </div>
+      <div>
+        <h4>联系</h4>
+        <p>tyhctech@hotmail.com</p>
+        <p>公众号：天予恒成</p>
+        <p>成都 · 天府新区</p>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 成都天予恒成科技有限公司</span>
+      <span>让 AI 在企业里有编制、有考核、有保障</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script src="diagnose.js"></script>
+</body>
+</html>
