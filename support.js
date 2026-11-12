@@ -83,7 +83,9 @@
   btn.type = "button";
   btn.className = "cs-btn";
   btn.setAttribute("aria-label", "在线客服");
-  btn.textContent = "在线客服";
+  btn.innerHTML = '<svg class="cs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 14.6a8.5 8.5 0 0 1 17 0"/><rect x="1.9" y="13.6" width="4.6" height="7" rx="2.3"/><rect x="17.5" y="13.6" width="4.6" height="7" rx="2.3"/></svg><span class="cs-label">在线客服</span>';
+  var label = btn.querySelector(".cs-label");
+  function setLabel(t) { label.textContent = t; }
   root.appendChild(btn);
 
   var panel = document.createElement("div");
@@ -175,13 +177,13 @@
   btn.addEventListener("click", function () {
     var open = panel.hidden;
     panel.hidden = !open;
-    btn.textContent = open ? "收起" : "在线客服";
+    setLabel(open ? "收起" : "在线客服");
     if (open) input.focus({ preventScroll: true });
   });
 
   close.addEventListener("click", function () {
     panel.hidden = true;
-    btn.textContent = "在线客服";
+    setLabel("在线客服");
   });
 
   send.addEventListener("click", function () { ask(input.value); });
@@ -191,6 +193,6 @@
   });
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && !panel.hidden) { panel.hidden = true; btn.textContent = "在线客服"; }
+    if (e.key === "Escape" && !panel.hidden) { panel.hidden = true; setLabel("在线客服"); }
   });
 })();
