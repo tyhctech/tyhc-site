@@ -165,18 +165,55 @@
     return n;
   }
 
-  function render() {
-    elStepLabel.textContent = "第 " + (step + 1) + " 步 / 共 " + STEPS.length + " 步 · " + STEPS[step];
+  function isWide() {
+    return window.matchMedia("(min-width:900px)").matches;
+  }
+
+  function renderCount() {
     elCount.textContent = answeredCount() + " / " + QUESTIONS.length + " 题";
-    elFill.style.width = Math.round(((step + 1) / STEPS.length) * 100) + "%";
-    elPrev.disabled = step === 0;
-    elNext.textContent = step === STEPS.length - 1 ? "生成初诊结论" : "下一步";
+  }
+
+  function fillBar(wide) {
+    var total = QUESTIONS.length;
+    elFill.style.width = wide
+      ? Math.round((answeredCount() / total) * 100) + "%"
+      : Math.round(((step + 1) / STEPS.length) * 100) + "%";
+  }
+
+  function render() {
+    var wide = isWide();
+    var total = QUESTIONS.length;
+
+    if (wide) {
+      elStepLabel.textContent = "共 " + total + " 题 · 一次填完";
+      elPrev.style.display = "none";
+      elNext.textContent = "生成初诊结论";
+    } else {
+      elStepLabel.textContent = "第 " + (step + 1) + " 步 / 共 " + STEPS.length + " 步 · " + STEPS[step];
+      elPrev.style.display = "";
+      elPrev.disabled = step === 0;
+      elNext.textContent = step === STEPS.length - 1 ? "生成初诊结论" : "下一步";
+    }
+    renderCount();
+    fillBar(wide);
 
     while (elBody.firstChild) elBody.removeChild(elBody.firstChild);
 
-    QUESTIONS.filter(function (q) { return q.step === step; }).forEach(function (q, idx) {
+    var list = wide ? QUESTIONS.slice() : QUESTIONS.filter(function (q) { return q.step === step; });
+    var lastGroup = -1;
+
+    list.forEach(function (q) {
+      if (wide && q.step !== lastGroup) {
+        lastGroup = q.step;
+        var g = document.createElement("div");
+        g.className = "q-group";
+        g.textContent = "第 " + (q.step + 1) + " 步 · " + STEPS[q.step];
+        elBody.appendChild(g);
+      }
+
       var block = document.createElement("div");
       block.className = "q";
+      block.setAttribute("data-qid", q.id);
 
       var l = document.createElement("div");
       l.className = "q-label";
@@ -197,7 +234,12 @@
         ta.rows = 3;
         ta.placeholder = q.placeholder || "";
         ta.value = state[q.id] || "";
-        ta.addEventListener("input", function () { state[q.id] = ta.value; elCount.textContent = answeredCount() + " / " + QUESTIONS.length + " 题"; });
+        ta.addEventListener("input", function () {
+          state[q.id] = ta.value;
+          renderCount();
+          fillBar(wide);
+          if (wide) block.classList.remove("q-miss");
+        });
         block.appendChild(ta);
       } else {
         var wrap = document.createElement("div");
@@ -207,6 +249,7 @@
           b.type = "button";
           b.className = "opt";
           b.textContent = o.t;
+          b.setAttribute("data-v", o.v);
           var cur = state[q.id] || (q.type === "multi" ? [] : "");
           var on = q.type === "multi" ? cur.indexOf(o.v) > -1 : cur === o.v;
           if (on) b.classList.add("on");
@@ -224,7 +267,20 @@
             } else {
               state[q.id] = o.v;
             }
-            render();
+            if (wide) {
+              block.classList.remove("q-miss");
+              Array.prototype.forEach.call(wrap.children, function (x) {
+                var isOn = q.type === "multi"
+                  ? (state[q.id] || []).indexOf(x.getAttribute("data-v")) > -1
+                  : state[q.id] === x.getAttribute("data-v");
+                x.classList.toggle("on", isOn);
+                x.setAttribute("aria-pressed", isOn ? "true" : "false");
+              });
+              renderCount();
+              fillBar(wide);
+            } else {
+              render();
+            }
           });
           wrap.appendChild(b);
         });
@@ -232,7 +288,6 @@
       }
 
       elBody.appendChild(block);
-      if (idx < 3) { /* 间距由 CSS 控制 */ }
     });
   }
 
@@ -252,20 +307,53 @@
     return ok;
   }
 
+  function missing() {
+    return QUESTIONS.filter(function (q) {
+      if (!q.required) return false;
+      var v = state[q.id];
+      return q.type === "multi" ? !(v && v.length) : !v;
+    });
+  }
+
+  function flashCount() {
+    elCount.classList.add("warn");
+    setTimeout(function () { elCount.classList.remove("warn"); }, 700);
+  }
+
+  function scrollToQuiz() {
+    var y = elQuiz.getBoundingClientRect().top + window.pageYOffset - 90;
+    window.scrollTo({ top: y < 0 ? 0 : y, behavior: "smooth" });
+  }
+
   elPrev.addEventListener("click", function () {
-    if (step > 0) { step--; render(); window.scrollTo({ top: elQuiz.offsetTop - 90, behavior: "smooth" }); }
+    if (isWide()) return;
+    if (step > 0) { step--; render(); scrollToQuiz(); }
   });
 
   elNext.addEventListener("click", function () {
+    if (isWide()) {
+      var miss = missing();
+      if (miss.length) {
+        miss.forEach(function (q) {
+          var blk = elBody.querySelector('[data-qid="' + q.id + '"]');
+          if (blk) blk.classList.add("q-miss");
+        });
+        var first = elBody.querySelector(".q-miss");
+        if (first) window.scrollTo({ top: first.getBoundingClientRect().top + window.pageYOffset - 110, behavior: "smooth" });
+        flashCount();
+        return;
+      }
+      showResult();
+      return;
+    }
     if (!validateStep()) {
-      elCount.classList.add("warn");
-      setTimeout(function () { elCount.classList.remove("warn"); }, 600);
+      flashCount();
       alert("这一步还有未选的必答项，选完再继续。");
       return;
     }
     if (step < STEPS.length - 1) {
       step++; render();
-      window.scrollTo({ top: elQuiz.offsetTop - 90, behavior: "smooth" });
+      scrollToQuiz();
     } else {
       showResult();
     }
@@ -423,35 +511,63 @@
       elResult.appendChild(note);
     }
 
+    var rep = document.createElement("div");
+    rep.className = "result-report";
+
+    var rh = document.createElement("h3");
+    rh.textContent = "索取完整初诊报告";
+    rep.appendChild(rh);
+
+    var rp1 = document.createElement("p");
+    rp1.textContent = "以上是本机的即时判断。完整的初诊报告由人工研判后出具，内容包括：现状与瓶颈诊断、场景优先级排序、投入与周期估算、落到岗位的实施路径。";
+    rep.appendChild(rp1);
+
+    var rp2 = document.createElement("p");
+    rp2.textContent = "把这份摘要用工作邮箱发送到 " + MAIL + "，并在邮件里注明「索取完整初诊报告」，我们在一个工作日内回信到该邮箱；也可以直接联系我们约一次沟通。";
+    rep.appendChild(rp2);
+
+    var repMail = document.createElement("a");
+    repMail.className = "btn btn-primary";
+    repMail.textContent = "邮件索取完整报告";
+    repMail.href = "mailto:" + MAIL
+      + "?subject=" + encodeURIComponent("索取完整初诊报告")
+      + "&body=" + encodeURIComponent(summaryText(res) + "\n\n请回信到本邮箱，索取完整初诊报告。");
+
+    var repNote = document.createElement("span");
+    repNote.className = "result-report-note";
+    repNote.textContent = "摘要已预填在邮件正文，直接发送即可。";
+
+    var repRow = document.createElement("div");
+    repRow.className = "result-report-row";
+    repRow.appendChild(repMail);
+    repRow.appendChild(repNote);
+    rep.appendChild(repRow);
+
+    elResult.appendChild(rep);
+
     var acts = document.createElement("div");
     acts.className = "result-actions";
 
-    var a1 = document.createElement("a");
-    a1.className = "btn btn-primary";
-    a1.href = "service.html";
-    a1.textContent = "看服务与价目";
-    acts.appendChild(a1);
-
-    var a2 = document.createElement("button");
-    a2.type = "button";
-    a2.className = "btn btn-ghost";
-    a2.textContent = "复制诊断摘要";
-    a2.addEventListener("click", function () {
+    var a1 = document.createElement("button");
+    a1.type = "button";
+    a1.className = "btn btn-ghost";
+    a1.textContent = "复制诊断摘要";
+    a1.addEventListener("click", function () {
       var txt = summaryText(res);
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).then(function () {
-          a2.textContent = "已复制";
-          setTimeout(function () { a2.textContent = "复制诊断摘要"; }, 1600);
-        }, function () { fallbackCopy(txt, a2); });
-      } else { fallbackCopy(txt, a2); }
+          a1.textContent = "已复制";
+          setTimeout(function () { a1.textContent = "复制诊断摘要"; }, 1600);
+        }, function () { fallbackCopy(txt, a1); });
+      } else { fallbackCopy(txt, a1); }
     });
-    acts.appendChild(a2);
+    acts.appendChild(a1);
 
-    var a3 = document.createElement("a");
-    a3.className = "btn btn-ghost";
-    a3.textContent = "发送到企业邮箱";
-    a3.href = "mailto:" + MAIL + "?subject=" + encodeURIComponent("AI 落地初诊摘要（来自官网自查）") + "&body=" + encodeURIComponent(summaryText(res));
-    acts.appendChild(a3);
+    var a2 = document.createElement("a");
+    a2.className = "btn btn-ghost";
+    a2.href = "index.html#contact";
+    a2.textContent = "联系我们";
+    acts.appendChild(a2);
 
     elResult.appendChild(acts);
 
@@ -490,6 +606,13 @@
     document.body.removeChild(ta);
     setTimeout(function () { btn.textContent = "复制诊断摘要"; }, 1600);
   }
+
+  var lastWide = isWide();
+  window.addEventListener("resize", function () {
+    if (isWide() === lastWide) return;
+    lastWide = isWide();
+    if (!elQuiz.hidden) render();
+  });
 
   render();
 })();
