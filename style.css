@@ -279,3 +279,25 @@ td strong,h3 strong{color:var(--text);font-weight:600}
   .result-report{padding:26px 28px}
 }
 @media(max-width:600px){.quiz{padding:22px}.q-label{font-size:15px}.result-box{padding:18px}}
+
+/* 站内客服 */
+.cs{position:fixed;right:22px;bottom:22px;z-index:95}
+.cs-btn{font-family:inherit;font-size:14px;color:#06101e;background:linear-gradient(135deg,var(--cyan),var(--violet));border:none;border-radius:999px;padding:11px 18px;cursor:pointer;box-shadow:0 10px 30px rgba(34,211,238,.22)}
+.cs-panel{position:absolute;right:0;bottom:56px;width:352px;max-width:calc(100vw - 32px);background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 24px 60px rgba(0,0,0,.5);display:flex;flex-direction:column;overflow:hidden}
+.cs-panel[hidden]{display:none}
+.cs-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line-soft)}
+.cs-title{font-size:14.5px;font-weight:600}
+.cs-close{background:none;border:none;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;font-family:inherit;padding:0 4px}
+.cs-log{max-height:320px;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;line-height:1.7}
+.cs-msg{max-width:88%;padding:9px 12px;border-radius:10px}
+.cs-bot{background:rgba(255,255,255,.04);border:1px solid var(--line-soft);color:var(--text);align-self:flex-start}
+.cs-me{background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.3);color:var(--text);align-self:flex-end}
+.cs-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+.cs-chip{font-family:inherit;font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:99px;padding:5px 11px;cursor:pointer}
+.cs-foot{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--line-soft)}
+.cs-input{flex:1;min-width:0;font-family:inherit;font-size:13.5px;color:var(--text);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.cs-input:focus{outline:none;border-color:rgba(34,211,238,.45)}
+.cs-send{font-family:inherit;font-size:13.5px;color:#06101e;background:linear-gradient(135deg,var(--cyan),var(--violet));border:none;border-radius:8px;padding:8px 14px;cursor:pointer}
+.cs-quick{display:flex;gap:14px;padding:0 16px 12px;font-size:12.5px}
+.cs-quick a{color:var(--cyan);text-decoration:none}
+@media(max-width:600px){.cs{right:14px;bottom:14px}.cs-panel{position:fixed;right:0;left:0;bottom:0;width:100%;max-width:none;border-radius:14px 14px 0 0}.cs-log{max-height:52vh}}
