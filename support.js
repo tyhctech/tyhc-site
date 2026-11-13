@@ -79,8 +79,34 @@
   btn.type = "button";
   btn.className = "cs-btn";
   btn.setAttribute("aria-label", "在线客服");
-  btn.innerHTML = '<svg class="cs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 14.6a8.5 8.5 0 0 1 17 0"/><rect x="1.9" y="13.6" width="4.6" height="7" rx="2.3"/><rect x="17.5" y="13.6" width="4.6" height="7" rx="2.3"/></svg><span class="cs-label">在线客服</span>';
-  var label = btn.querySelector(".cs-label");
+  btn.appendChild(buildIcon());
+  var label = document.createElement("span");
+  label.className = "cs-label";
+  label.textContent = "在线客服";
+  btn.appendChild(label);
+
+  function buildIcon() {
+    var NS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "cs-ico");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "2.1");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    var ring = document.createElementNS(NS, "path");
+    ring.setAttribute("d", "M3.5 14.6a8.5 8.5 0 0 1 17 0");
+    var left = document.createElementNS(NS, "rect");
+    left.setAttribute("x", "1.9"); left.setAttribute("y", "13.6");
+    left.setAttribute("width", "4.6"); left.setAttribute("height", "7"); left.setAttribute("rx", "2.3");
+    var right = document.createElementNS(NS, "rect");
+    right.setAttribute("x", "17.5"); right.setAttribute("y", "13.6");
+    right.setAttribute("width", "4.6"); right.setAttribute("height", "7"); right.setAttribute("rx", "2.3");
+    svg.appendChild(ring); svg.appendChild(left); svg.appendChild(right);
+    return svg;
+  }
   function setLabel(t) { label.textContent = t; }
   root.appendChild(btn);
 
@@ -128,6 +154,7 @@
   var input = document.createElement("input");
   input.type = "text";
   input.className = "cs-input";
+  input.maxLength = 200;
   input.placeholder = "输入问题，例如：私有化部署怎么算";
   input.setAttribute("aria-label", "输入问题");
   var send = document.createElement("button");
@@ -162,7 +189,7 @@
   }
 
   function ask(text) {
-    var t = String(text || "").trim();
+    var t = String(text || "").trim().slice(0, 200);
     if (!t) return;
     add("me", t);
     var a = answerFor(t);
